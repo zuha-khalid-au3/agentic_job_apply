@@ -1,0 +1,31 @@
+- name: gpt-3.5-turbo
+  urls:
+    - https://huggingface.co/microsoft/DialoGPT-medium/resolve/main/pytorch_model.bin
+  backend: llama
+  parameters:
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    top_k: 40
+    top_p: 0.95
+    max_tokens: 2048
+    context_size: 4096
+
+- name: gpt-4
+  urls:
+    - https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.q4_0.bin
+  backend: llama
+  parameters:
+    model: gpt-4
+    temperature: 0.7
+    top_k: 40
+    top_p: 0.95
+    max_tokens: 2048
+    context_size: 4096
+
+- name: text-embedding-ada-002
+  urls:
+    - https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/pytorch_model.bin
+  backend: bert-embeddings
+  parameters:
+    model: text-embedding-ada-002
+

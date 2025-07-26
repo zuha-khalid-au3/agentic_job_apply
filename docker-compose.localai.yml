@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  localai:
+    image: quay.io/go-skynet/local-ai:latest
+    container_name: localai
+    ports:
+      - "8080:8080"
+    environment:
+      - DEBUG=true
+      - MODELS_PATH=/models
+      - PRELOAD_MODELS_CONFIG=/models/preload_models.yaml
+    volumes:
+      - ./models:/models:cached
+      - ./preload_models.yaml:/models/preload_models.yaml:ro
+    command: ["/usr/bin/local-ai"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  job-agent:
+    build: .
+    container_name: job-application-agent
+    ports:
+      - "8501:8501"
+    environment:
+      - USE_LOCALAI=true
+      - LOCALAI_URL=http://localai:8080
+      - LOCALAI_MODEL=gpt-3.5-turbo
+    depends_on:
+      localai:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+networks:
+  default:
+    name: job-agent-network
+
